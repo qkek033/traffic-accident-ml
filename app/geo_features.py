@@ -4,25 +4,24 @@ from sklearn.neighbors import BallTree
 
 EARTH_RADIUS_KM = 6371.0088
 
-def _to_radians(lat_series, lon_series):
-    lat = np.asarray(lat_series, dtype=float)
-    lon = np.asarray(lon_series, dtype=float)
-    return np.deg2rad(np.c_[lat, lon])
+def build_balltree_from_csv(csv_path: str, lat_col: str, lon_col: str, encoding: str = "utf-8"):
+    df = pd.read_csv(csv_path, encoding=encoding, low_memory=False)
+    df = df.dropna(subset=[lat_col, lon_col]).copy()
+    df[lat_col] = pd.to_numeric(df[lat_col], errors="coerce")
+    df[lon_col] = pd.to_numeric(df[lon_col], errors="coerce")
+    df = df.dropna(subset=[lat_col, lon_col])
 
-def build_balltree_from_csv(path: str, lat_col: str, lon_col: str, encoding: str | None = None):
-    df = pd.read_csv(path, encoding=encoding) if encoding else pd.read_csv(path)
-    # 🔥 추가 (이게 핵심)
-    df = df[[lat_col, lon_col]].dropna()
-    df[lat_col] = pd.to_numeric(df[lat_col], errors='coerce')
-    df[lon_col] = pd.to_numeric(df[lon_col], errors='coerce')
-    df = df.dropna()
-    coords_rad = _to_radians(df[lat_col], df[lon_col])
+    coords_rad = np.deg2rad(df[[lat_col, lon_col]].to_numpy())
     tree = BallTree(coords_rad, metric="haversine")
-    return tree
+    return tree, df
 
 def count_within_radius_km(tree: BallTree, lat: float, lon: float, radius_km: float) -> int:
-    # BallTree haversine은 “라디안 거리”라서 km -> 라디안 변환 필요
+    pt = np.deg2rad([[lat, lon]])
     radius_rad = radius_km / EARTH_RADIUS_KM
-    point = _to_radians([lat], [lon])
-    ind = tree.query_radius(point, r=radius_rad, return_distance=False)
-    return int(len(ind[0]))
+    idx = tree.query_radius(pt, r=radius_rad, return_distance=False)
+    return int(len(idx[0]))
+
+def nearest_row(tree: BallTree, df: pd.DataFrame, lat: float, lon: float) -> pd.Series:
+    pt = np.deg2rad([[lat, lon]])
+    dist_rad, ind = tree.query(pt, k=1)
+    return df.iloc[int(ind[0][0])]
