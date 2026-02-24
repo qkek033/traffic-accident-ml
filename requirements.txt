@@ -1,8 +1,14 @@
-fastapi
-uvicorn[standard]
-pydantic
+# Streamlit 대시보드
+streamlit
+folium
+streamlit-folium
 numpy
 pandas
 scikit-learn
 lightgbm
 joblib
+
+# FastAPI (로컬 API 사용 시)
+fastapi
+uvicorn[standard]
+pydantic

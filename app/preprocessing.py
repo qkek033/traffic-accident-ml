@@ -5,7 +5,7 @@ CAT_COLS = [
 ]
 NUM_COLS = [
     '발생년','발생월','발생일','발생시','경도','위도','사상자수',
-    '반경500m카메라수','반경500m학교수','반경500m전광판수'
+    '반경500m카메라수','반경500m학교수','반경500m전광판수','반경500m사고건수'
 ]
 
 def make_feature_row(raw: dict, feature_columns: list[str]) -> pd.DataFrame:
