@@ -1,9 +1,54 @@
-# traffic-accident-ml
+#  Traffic Accident Risk Prediction Service
+> 위치 기반 데이터를 활용해 교통사고 위험도를 예측하고, 지도 인터랙션을 통해 직관적으로 분석할 수 있는 ML 기반 서비스입니다. 
+> (FastAPI + Streamlit + ML)
 
-feat: 기능 추가 (없던걸 새로 만들면 이거, 사용자가 보는것에서 추가가 일어났다.)
+---
 
-fix: 버그 수정 (있던걸 수정한거, 사용자가 보지못하는 서버에서 수정할때)
+##  Overview
+본 프로젝트는 교통사고 데이터를 기반으로 특정 위치의 사고 위험도를 예측하고,
+주변 환경 및 공간 정보를 결합하여 직관적인 시각화까지 제공하는 서비스입니다.
 
-refactor: 리팩토링 (내부 로직이나 사용자가 쓰는것들은 아무것도 안건들이는데, 내부 코드나 폴더이름바꿀때)
+단순 모델링을 넘어서,
+- FastAPI를 활용한 모델 서빙
+- BallTree 기반 공간 Feature 엔지니어링
+- Streamlit + 지도 인터랙션 UI
+까지 포함한 **End-to-End ML 서비스 구조**를 직접 구현했습니다.
+---
 
-docs: 문서 (README 같은거 수정했을때)
+##  Features
+
+- **위치 기반 사고 위험 예측**
+- **지도 클릭 인터랙션**
+- **위험도 시각화 (KPI + Progress Bar)**
+- **사고다발구역 포함 여부 판단**
+- **주변 시설 기반 Feature 반영**
+- **ML 모델 기반 예측 (LightGBM)**
+- **실제 사고 데이터 기반 최근 사고 정보 제공**
+
+---
+
+##  Tech Stack
+
+| Category | Stack |
+|--------|------|
+| Backend | FastAPI |
+| Frontend | Streamlit |
+| ML | LightGBM |
+| Data | Pandas, Numpy |
+| Geo | BallTree (Haversine) |
+| Visualization | Folium |
+
+---
+
+##  Architecture
+
+```plaintext
+User (Streamlit UI)
+        ↓
+FastAPI Server (Prediction API)
+        ↓
+ML Model (LightGBM)
+        ↓
+Geo Feature Engineering (BallTree)
+        ↓
+Accident Data (CSV)
