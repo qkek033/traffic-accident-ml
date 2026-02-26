@@ -260,7 +260,7 @@ with col2:
             <div class="small">발생시간</div>
             <br>
             <div class="metric">{result.get("최근사고_사상자수")}</div>
-            <div class="small">사망자수</div>
+            <div class="small">사상자수</div>
         </div>
         """, unsafe_allow_html=True)
 
